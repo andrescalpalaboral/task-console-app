@@ -12,12 +12,12 @@ const main = async () => {
     opt = await inquirerMenu();
     switch (opt) {
       case "1":
-        const description = await readInput("Descripción:");
+        const description = await readInput("Description:");
         tasks.addTask(description);
         break;
 
       case "2":
-        console.log(tasks);
+        console.log(tasks.listArray);
         break;
     }
 
