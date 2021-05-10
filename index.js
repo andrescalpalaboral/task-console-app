@@ -1,7 +1,9 @@
 require("colors");
 const { inquirerMenu, pause, readInput } = require("./helpers/inquirer");
 const Tasks = require("./models/tasks");
+const generateJsonFile = require("./utils/fileGenerator");
 
+const filePath = "./db/data.json";
 console.clear();
 
 const main = async () => {
@@ -21,6 +23,7 @@ const main = async () => {
         break;
     }
 
+    generateJsonFile(filePath, tasks.listArray);
     await pause();
   } while (opt !== "0");
 };
