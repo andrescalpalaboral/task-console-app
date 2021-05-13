@@ -74,8 +74,67 @@ const readInput = async (message) => {
   return description;
 };
 
+const listOfTaskToDelete = async (tasks = []) => {
+  const choices = tasks.map((task, index) => {
+    const indice = `${index + 1}.`.green;
+    return {
+      value: task.id,
+      name: `${indice} ${task.description}`,
+    };
+  });
+
+  choices.unshift({
+    value: "0",
+    name: "0.".green + "Cancel",
+  });
+
+  const menuQuestion = [
+    {
+      type: "list",
+      name: "id",
+      message: "Delete task",
+      choices,
+    },
+  ];
+
+  const { id } = await inquirer.prompt(menuQuestion);
+  return id;
+};
+
+const listOfTaskToComplete = async (tasks = []) => {
+  const choices = tasks.map((task, index) => {
+    const indice = `${index + 1}.`.green;
+    return {
+      value: task.id,
+      name: `${indice} ${task.description}`,
+      checked: task.createdAt ? true : false,
+    };
+  });
+
+  const menuQuestion = [
+    {
+      type: "checkbox",
+      name: "ids",
+      message: "Select task(s)",
+      choices,
+    },
+  ];
+
+  const { ids } = await inquirer.prompt(menuQuestion);
+  return ids;
+};
+
+const confirmAction = async (message = "Are you sure?") => {
+  const messageQuestion = [{ type: "confirm", name: "confirm", message }];
+
+  return await inquirer.prompt(messageQuestion);
+};
+
 module.exports = {
   inquirerMenu,
   pause,
   readInput,
+  listOfTaskToDelete,
+  confirmAction,
+  listOfTaskToComplete,
 };

@@ -1,7 +1,14 @@
 require("colors");
-const { inquirerMenu, pause, readInput } = require("./helpers/inquirer");
+const {
+  inquirerMenu,
+  pause,
+  readInput,
+  listOfTaskToDelete,
+  confirmAction,
+  listOfTaskToComplete,
+} = require("./helpers/inquirer");
 const Tasks = require("./models/tasks");
-const generateJsonFile = require("./utils/fileGenerator");
+const { generateJsonFile, readJsonFile } = require("./utils/fileGenerator");
 
 const filePath = "./db/data.json";
 console.clear();
@@ -9,6 +16,11 @@ console.clear();
 const main = async () => {
   let opt = "";
   const tasks = new Tasks();
+  const tasksFile = readJsonFile(filePath);
+
+  if (tasksFile) {
+    tasks.loadTasksToFile(tasksFile);
+  }
 
   do {
     opt = await inquirerMenu();
@@ -19,7 +31,31 @@ const main = async () => {
         break;
 
       case "2":
-        console.log(tasks.listArray);
+        tasks.listTasksInTableMark();
+        break;
+
+      case "3":
+        tasks.listTasksCompletedOrPending();
+        break;
+
+      case "4":
+        tasks.listTasksCompletedOrPending(false);
+        break;
+
+      case "5":
+        const ids = await listOfTaskToComplete(tasks.listArray);
+        tasks.toggleTasks(ids);
+        break;
+
+      case "6":
+        const id = await listOfTaskToDelete(tasks.listArray);
+        if (id !== "0") {
+          const confirm = await confirmAction();
+          if (confirm) {
+            tasks.deleteTask(id);
+            console.log("Task deleted");
+          }
+        }
         break;
     }
 
